@@ -73,7 +73,7 @@
 			background-color: #006297;
 			top: 50px;
 			width: 300px;
-			height: 200px;
+			height: 300px;
 			right: -305px;
 			z-index: 9;
 			border-radius: 3px;
@@ -152,13 +152,13 @@
 		// d3.json("https://test.pax.peaceagreements.org/api/agreements/?format=json", d => init(d.results))
 		// d3.csv("agreements-small-june-2019.csv", d => init(d))
 		Promise.all([
-			d3.csv("agreements-small-june-2019.csv"),
+			// d3.csv("agreements-small-june-2019.csv"),
 			d3.csv("pax.csv"),
 		]).then(d => init(d))
 
 		function init(pax) {
 
-			pax = pax[1]
+			pax = pax[0]
 			//Filter & Sort agreement data
 			pax = pax.filter((d, i) => d.Stage !== "Oth")
 			pax.sort(function (a, b) {

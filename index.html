@@ -80,15 +80,26 @@
 			color: white;
 			padding: 20px;
 		}
+
+		.dropdown-menu {
+			height: 500px;
+			overflow-y: auto;
+		}
 	</style>
 </head>
 
 <body>
 	<div class="container-fluid">
 		<div class="form-group" style="position: absolute; padding-top: 7px;">
-			<select id="dropdown_process" style="width: 200px; height: 30px">
+			<!-- <select id="dropdown_process" style="width: 200px; height: 30px">
 				<option value="selected">--Select Peace Process--</option>
-			</select>
+			</select> -->
+			<form>
+				<div class="form-group">
+					<input class="form-control" id="typeahead" type="text" class="typeahead"
+						placeholder="Search for processes" autocomplete="off">
+				</div>
+			</form>
 		</div>
 		<h2 style="text-align: center; padding-top: 5px;">Back and forth in Peace Negotiations</h2>
 		<button title="Information" id="info_button"><i class="fa fa-info"></i></button>
@@ -151,14 +162,17 @@
 
 		// d3.json("https://test.pax.peaceagreements.org/api/agreements/?format=json", d => init(d.results))
 		// d3.csv("agreements-small-june-2019.csv", d => init(d))
+
 		Promise.all([
-			// d3.csv("agreements-small-june-2019.csv"),
 			d3.csv("pax.csv"),
+			d3.csv("pax_v8_export.csv"),
 		]).then(d => init(d))
 
 		function init(pax) {
+			console.log(pax[0]);
+			console.log(pax[1]);
 
-			pax = pax[0]
+			pax = pax[1]
 			//Filter & Sort agreement data
 			pax = pax.filter((d, i) => d.Stage !== "Oth")
 			pax.sort(function (a, b) {
@@ -170,11 +184,11 @@
 			var data = {
 				"ideal": [
 					{ "Dat": "1990-01-01", "PPName": "ideal", "Stage": "Cea" },
-					{ "Dat": "1995-01-01", "PPName": "ideal", "Stage": "Pre" },
-					{ "Dat": "2000-01-01", "PPName": "ideal", "Stage": "SubPar" },
-					{ "Dat": "2005-01-01", "PPName": "ideal", "Stage": "SubComp" },
-					{ "Dat": "2010-01-01", "PPName": "ideal", "Stage": "Ren" },
-					{ "Dat": "2019-01-01", "PPName": "ideal", "Stage": "Ren" }]
+					{ "Dat": "1998-01-01", "PPName": "ideal", "Stage": "Pre" },
+					{ "Dat": "2006-01-01", "PPName": "ideal", "Stage": "SubPar" },
+					{ "Dat": "2014-01-01", "PPName": "ideal", "Stage": "SubComp" },
+					{ "Dat": "2022-01-01", "PPName": "ideal", "Stage": "Ren" },
+					{ "Dat": "2023-01-01", "PPName": "ideal", "Stage": "Ren" }]
 			}
 
 			pax.forEach(function (agreement) {
@@ -197,15 +211,17 @@
 				.range([d3.rgb("#0075FF"), d3.rgb("#555555"), d3.rgb("#FF3B00")])
 			var scaleY = d3.scaleLinear()
 				.domain(d3.extent(sequence, d => d.position))
-				.range([20, height])
+				.range([20, height - 8])
 			var scaleX = d3.scaleTime()
-				.domain(d3.extent(pax, function (d) { return parseTime(d.Dat) }))
-				.range([0, width - margin - 10])
-			var xAxis = d3.axisTop(scaleX);
+				// .domain(d3.extent(pax, function (d) { return parseTime(d.Dat) }))
+				.domain([parseTime("1990-01-01"), parseTime("2024-01-01")])
+				.range([0, width - margin])
+			// .nice()
+			var xAxis = d3.axisTop(scaleX).ticks(10);
 			var years = svg
 				.append("g")
 				.attr("class", "axis axis--x")
-				.attr("transform", "translate(0,20)")
+				.attr("transform", "translate(20,20)")
 				.call(xAxis);
 
 			//legend
@@ -214,7 +230,7 @@
 				.selectAll("g")
 				.data(sequence).enter()
 				.append("text")
-				.attr("y", d => scaleY(d.position) - 15)
+				.attr("y", d => scaleY(d.position) - 20)
 				.attr("font-size", "10pt")
 				.attr("text-anchor", "start")
 				.selectAll("tspan").data(d => d.name).enter().append("tspan")
@@ -251,6 +267,8 @@
 				.attr("class", "processes")
 				.attr("clip-path", "url(#ellipse-clip)")
 				.attr("pointer-events", "all")
+				.attr("transform", `translate(5,0)`);
+
 			//.on("click",d=>{console.log(d)})
 
 			var process = container.selectAll("g")
@@ -275,7 +293,9 @@
 				})
 
 			//draw circles for each agreement
-			var circles = svg.append("g").attr("class", "circles").selectAll("circle").data(pax).enter().append("circle")
+			var circles = svg.append("g")
+				.attr("transform", `translate(5,0)`)
+				.attr("class", "circles").selectAll("circle").data(pax).enter().append("circle")
 				.attr("class", d => "PP-" + d.PP)
 				.attr("cx", d => Math.round(scaleX(parseTime(d.Dat))))
 				.attr("cy", d => scaleY(sequence.find(x => x.key == d.Stage).position))
@@ -325,11 +345,11 @@
 				ideal.helper = ideal.container.append("text")
 					.attr("y", scaleY(3.2))
 					.attr("fill", "#0075FF")
-					.selectAll("tspan").data(["If peace data went smoothly from one stage to the next,", "they'd be represented with a blue line steadily going up.", "CLICK TO START"]).enter().append("tspan")
+					.selectAll("tspan").data(["If peace negotiations went smoothly from one stage to the next,", "they would be represented by this blue line going steadily up.", "CLICK TO START"]).enter().append("tspan")
 					.text(d => d)
-					.attr("x", Math.round(scaleX(parseTime("1998-06-01"))))
-					.attr("dy", "10pt")
-					.attr("font-size", "10pt")
+					.attr("x", Math.round(scaleX(parseTime("2003-06-01"))))
+					.attr("dy", "12pt")
+					.attr("font-size", "13pt")
 					.style("font-weight", (d, i) => (i > 1) ? "bold" : "normal")
 					.on("click", _ => toggleIdeal())
 
@@ -478,12 +498,42 @@
 				}
 			})
 
-			// var $input = $("#typeahead");
-			// $input
-			// 	.typeahead({ source: Object.entries(data).map(d => { return { 'name': d[0], "PP": d[1][0].PP } }).filter(d => d.name != "ideal") })
-			// 	.change(function (e) {
-			// 		enterProcess($input.typeahead("getActive").PP, $input.typeahead("getActive").name)
-			// 	})
+			// console.log(data);
+			let hovno = Object.entries(data).map(function (d) {
+				return { 'name': d[0], "PP": d[1][0].PP }
+			}).filter(d => d.name != "ideal")
+
+			console.log(hovno);
+			hovno.sort((a, b) => {
+				let nameA = a.name.toUpperCase();
+				let nameB = b.name.toUpperCase();
+				if (nameA < nameB) {
+					return -1;
+				}
+				if (nameA > nameB) {
+					return 1;
+				}
+				return 0;
+			});
+
+			var $input = $("#typeahead");
+			$input
+				.typeahead({
+					source: hovno,
+					autoSelect: false,
+					items: 1000,
+					minLength: 0,
+				})
+				.change(function (e) {
+					enterProcess($input.typeahead("getActive").PP, $input.typeahead("getActive").name)
+				})
+
+			$input.on("click", function () {
+				let ev = $.Event("keydown");
+				ev.keyCode = ev.which = 40;
+				$input.trigger(ev);
+				return true;
+			});
 		}
 	</script>
 </body>

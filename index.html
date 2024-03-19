@@ -278,6 +278,18 @@
 				processPath.attr("stroke-opacity", .05)
 				processPath.attr("pointer-events", "none")
 				ideal.show = true;
+				fixed = null;
+				$("#selUser").val(0).trigger('change');
+
+				/*svg.call(zoom).transition().duration(1500)
+						.call(zoom.transform,
+							d3.zoomIdentity
+								  .scale(1)
+								  .translate(0, 0)
+							);*/
+
+				circles.attr("opacity", 0).attr("pointer-events", "none")
+				d3.select("#main_title").html('Back and Forth in Peace Negotiations')
 				drawIdeal();
 			})
 

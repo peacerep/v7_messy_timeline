@@ -275,8 +275,10 @@
 			d3.select(".button1").on("click", function () {
 				d3.selectAll(".idline").remove()
 				ideal.container.transition().duration(200).style("opacity", 1)
-				processPath.attr("stroke-opacity", .05)
-				processPath.attr("pointer-events", "none")
+				processPath
+				.attr("stroke-opacity", .05)
+				.attr("stroke-width", 1)
+				.attr("pointer-events", "none")
 				ideal.show = true;
 				fixed = null;
 				$("#selUser").val(0).trigger('change');

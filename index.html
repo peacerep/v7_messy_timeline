@@ -14,9 +14,9 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-		integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"/>
-	<link href="https://fonts.googleapis.com/css?family=Karla:400,700&display=swap" rel="stylesheet"/>
-	<link rel="stylesheet" href="css/index.css"/>
+		integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
+	<link href="https://fonts.googleapis.com/css?family=Karla:400,700&display=swap" rel="stylesheet" />
+	<link rel="stylesheet" href="css/index.css" />
 
 </head>
 
@@ -31,6 +31,7 @@
 		</div>
 		<h4 id="main_title" style="text-align: center; padding-top: 5px;">Back and Forth in Peace Negotiations</h4>
 		<button title="Information" id="info_button"><i class="fa fa-info"></i></button>
+		<button class="button button1"><i class="fa fa-refresh" style="color:black"></i></button>
 		<div id="info" style="font-size: 14px;">
 			<p>This visualisation shows the trajectory of all formal agreements in peace
 				processes from 1990-2023.
@@ -39,9 +40,10 @@
 				Click the visualisation to start and see how processes go back and forth.</p>
 			<p>This visualisation illustrates all processes in version 8 of the PA-X Peace
 				Agreements Database,
-				accessible from: <a target="_blank" href="https://www.peaceagreements.org">www.peaceagreements.org</a>.</p>
+				accessible from: <a target="_blank" href="https://www.peaceagreements.org">www.peaceagreements.org</a>.
+			</p>
 			<p></p>
-			<p style="font-size: 12px;">Credits: Tobias Kauer for original visualisation design & Tomas Vancisin for 
+			<p style="font-size: 12px;">Credits: Tobias Kauer for original visualisation design & Tomas Vancisin for
 				v2 updates at PeaceRep (University of Edinburgh).
 			</p>
 		</div>
@@ -270,6 +272,16 @@
 						.attr("r", 5)
 				})
 
+			d3.select(".button1").on("click", function () {
+				d3.selectAll(".idline").remove()
+				ideal.container.transition().duration(200).style("opacity", 1)
+				processPath.attr("stroke-opacity", .05)
+				processPath.attr("pointer-events", "none")
+				ideal.show = true;
+				drawIdeal();
+			})
+
+
 			//Idealized process line
 			drawIdeal();
 			function drawIdeal() {
@@ -281,6 +293,7 @@
 					.enter()
 					.append("path")
 					.attr("fill-opacity", 0)
+					.attr("class", "idline")
 					.attr("stroke-width", 2)
 					.attr("stroke-opacity", 1)
 					.attr("stroke", "#0075FF")
@@ -297,6 +310,7 @@
 					.attr("dy", "12pt")
 					.attr("font-size", "13pt")
 					.style("font-weight", (d, i) => (i > 1) ? "bold" : "normal")
+					.attr("class", "idline")
 					.on("click", _ => toggleIdeal())
 
 				//draw example in explanation
@@ -309,13 +323,14 @@
 					.attr("d", "M 1 11 C 10 11, 10 1, 20 1")
 					.attr("stroke", "#0075FF")
 					.attr("stroke-width", 2)
+					.attr("class", "idline")
 					.attr("fill", "transparent")
 			}
 
 			function toggleIdeal() {
 				if (ideal.show) {
 					ideal.container.style("opacity", 0).style("visibility", "hidden")
-					// d3.select("#ideal-example").style("display", "block").style("opacity", 1)
+					d3.select("#ideal-example").style("display", "block").style("opacity", 1)
 					processPath.attr("pointer-events", "all").attr("stroke-opacity", 9)
 					ideal.show = false;
 				} else {

@@ -30,10 +30,9 @@ div.tooltip {
     font-size: 12px;
 }
 
-#info_button {
+#info_button, .button1 {
     position: absolute;
     top: 4px;
-    right: 4px;
     background-color: white;
     border: 0.5px solid rgba(0, 0, 0, 0.205);
     color: black;
@@ -46,7 +45,19 @@ div.tooltip {
     border-radius: 4px;
 }
 
+#info_button {
+    right: 70px;
+}
+
+.button1 {
+    right: 4px;
+}
+
 #info_button:hover {
+    background-color: #0062973a
+}
+
+.button1:hover {
     background-color: #0062973a
 }
 
@@ -93,3 +104,24 @@ div.tooltip {
     position: absolute;
     top: 0px;
 }
+
+/* .button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: #04AA6D ;
+    border: none;
+    color: white;
+    padding: 2px 15px;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 2px;
+    display: inline-block;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.button1:hover {
+    background-color: red;
+    color: white;
+} */

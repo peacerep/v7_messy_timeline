@@ -294,7 +294,7 @@
 					}
 				})
 				.attr("r", function (d, i) {
-					return 5 
+					return 5
 				})
 				.attr("stroke", "black")
 				.attr("stroke-width", 1)
@@ -348,7 +348,26 @@
 				})
 
 
+
+			let counter_collab = 0;
+			d3.select("#info_button").on("click", function () {
+				counter_collab += 1;
+				if (counter_collab % 2 !== 0) {
+					d3.select("#info")
+						.style("right", 5 + "px")
+				}
+				else {
+					d3.select("#info")
+						.style("right", -305 + "px")
+				}
+			})
+
+
 			d3.select(".button1").on("click", function () {
+				counter_collab = 0;
+				d3.select("#info")
+					.style("right", -305 + "px")
+
 				d3.selectAll(".idline").remove()
 				ideal.container.transition().duration(200).style("opacity", 1)
 				processPath
@@ -553,18 +572,6 @@
 			});
 
 
-			let counter_collab = 0;
-			d3.select("#info_button").on("click", function () {
-				counter_collab += 1;
-				if (counter_collab % 2 !== 0) {
-					d3.select("#info")
-						.style("right", 5 + "px")
-				}
-				else {
-					d3.select("#info")
-						.style("right", -305 + "px")
-				}
-			})
 		}
 	</script>
 </body>

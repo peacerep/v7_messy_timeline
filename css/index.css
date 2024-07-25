@@ -66,6 +66,14 @@ div.tooltip {
     right: 65px;
 }
 
+#info_button:focus{
+    outline: 0px;
+}
+
+.button1:focus{
+    outline: 0px;
+}
+
 #info_button:hover {
     background-color: #AA4197;
     color: white;
@@ -130,24 +138,3 @@ div.tooltip {
     background-color: #AA4197;
     color: white;
 }
-
-/* .button {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    background-color: #04AA6D ;
-    border: none;
-    color: white;
-    padding: 2px 15px;
-    text-align: center;
-    text-decoration: none;
-    border-radius: 2px;
-    display: inline-block;
-    font-size: 20px;
-    cursor: pointer;
-}
-
-.button1:hover {
-    background-color: red;
-    color: white;
-} */

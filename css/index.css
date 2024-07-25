@@ -38,12 +38,12 @@ div.tooltip {
     color: black;
     padding: 1px 20px;
     text-align: center;
-    font-size: 20px;
+    font-size: 18px;
     display: inline-block;
     text-decoration: none;
     cursor: pointer;
     border-radius: 4px;
-    right: 70px;
+    right: 4px;
 }
 
 #info_button {
@@ -54,16 +54,12 @@ div.tooltip {
     color: black;
     padding: 1px 20px;
     text-align: center;
-    font-size: 20px;
+    font-size: 18px;
     display: inline-block;
     text-decoration: none;
     cursor: pointer;
     border-radius: 4px;
-    right: 70px;
-}
-
-.button1 {
-    right: 4px;
+    right: 65px;
 }
 
 #info_button:hover {

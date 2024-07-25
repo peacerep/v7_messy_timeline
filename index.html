@@ -26,14 +26,14 @@
 
 		<div id="agt_tooltip"></div>
 
-		<div class="form-group" style="position: absolute; top: 4px; left: 4px;">
+		<div class="form-group" style="position: absolute; top: 8px; left: 6px;">
 			<select id='selUser' style='width: 250px;'>
 				<option value="0">Peace Process</option>
 			</select>
 			<input type='button' value='Go' id='but_read'>
 		</div>
 
-		<h4 id="main_title" style="text-align: center; padding-top: 5px;">Back and Forth in Peace Negotiations</h4>
+		<h3 id="main_title" style="text-align: center; padding-top: 5px;">Back and Forth in Peace Negotiations</h3>
 		<button title="Information" id="info_button"><i class="fa fa-info"></i></button>
 		<button class="button button1"><i class="fa fa-refresh" style="color:black"></i></button>
 		<div id="info" style="font-size: 14px;">
@@ -138,7 +138,7 @@
 				.range([d3.rgb("#0075FF"), d3.rgb("#555555"), d3.rgb("#FF3B00")])
 			var scaleY = d3.scaleLinear()
 				.domain(d3.extent(sequence, d => d.position))
-				.range([25, height - 8])
+				.range([25, height - 30])
 			var scaleX = d3.scaleTime()
 				.domain([parseTime("1990-01-01"), parseTime("2024-01-01")])
 				.range([0, width - margin])
@@ -147,12 +147,12 @@
 			var years = svg
 				.append("g")
 				.attr("class", "axis axis--x")
-				.attr("transform", "translate(20,20)")
-				.call(xAxis).selectAll("text").style("fill", "black").style("font-style", "italic")
+				.attr("transform", "translate(20,40)")
+				.call(xAxis).selectAll("text").style("fill", "black").style("font-style", "italic").style("font-size", "14px")
 
 
 			//legend
-			var legend = svg.append("g")
+			var legend = svg.append("g").attr("transform", "translate(5,15)")
 				.attr("class", "lines")
 				.selectAll("g")
 				.data(sequence).enter()
@@ -194,7 +194,7 @@
 				.attr("class", "processes")
 				.attr("clip-path", "url(#ellipse-clip)")
 				.attr("pointer-events", "all")
-				.attr("transform", `translate(5,0)`);
+				.attr("transform", `translate(0,15)`);
 			//.on("click",d=>{console.log(d)})
 
 			var process = container.selectAll("g")
@@ -254,7 +254,7 @@
 
 			//draw circles for each agreement
 			var circles = svg.append("g")
-				.attr("transform", `translate(5,0)`)
+				.attr("transform", `translate(0,15)`)
 				.attr("class", "circles")
 				.selectAll("circle")
 				.data(groupedData)
@@ -286,7 +286,7 @@
 						return scaleY(sequence.find(x => x.key == d.Stage).position)
 					}
 					else {
-						same_counter += 5;
+						same_counter += 7;
 						current_year = d.Dat
 						current_stage = d.Stage
 						console.log("FOUR");
@@ -294,7 +294,7 @@
 					}
 				})
 				.attr("r", function (d, i) {
-					return 5
+					return 5 
 				})
 				.attr("stroke", "black")
 				.attr("stroke-width", 1)
@@ -303,7 +303,6 @@
 				.attr("opacity", 0)
 				.attr("pointer-events", "none")
 				.on("mouseover", function (d, i) {
-
 					d3.select("#agt_tooltip")
 						.style("display", "block")
 						// .style("left", x_position + "px")
@@ -337,7 +336,7 @@
 					d3.select(this)
 						.transition()
 						.duration(50)
-						.attr("r", 10)
+						.attr("r", 8)
 				})
 				.on("mouseout", function (d) {
 					d3.select("#agt_tooltip")
@@ -376,7 +375,8 @@
 			//Idealized process line
 			drawIdeal();
 			function drawIdeal() {
-				ideal.container = svg.append("g").attr("class", "ideal")
+				ideal.container = svg.append("g").attr("class", "ideal").attr("transform", `translate(5,15)`)
+
 
 				//draw line in plot
 				ideal.line = ideal.container.selectAll("path")
@@ -390,7 +390,7 @@
 					.attr("stroke", "#0075FF")
 					.style("text-shadow", "1px 1px 2px black")
 					.attr("d", (d, i) => segment(d, i, scaleX))
-					.attr("pointer-events", "all")
+					.attr("pointer-events", "none")
 				//draw annotation
 				ideal.helper = ideal.container.append("text")
 					.attr("y", scaleY(3.2))

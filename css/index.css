@@ -38,14 +38,14 @@ div.tooltip {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
     border: none;
     color: black;
-    padding: 1px 20px;
+    padding: 1px 18px;
     text-align: center;
     font-size: 18px;
     display: inline-block;
     text-decoration: none;
     cursor: pointer;
     border-radius: 2px;
-    right: 4px;
+    right: 3px;
 }
 
 #info_button {
@@ -56,14 +56,14 @@ div.tooltip {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
     border: none;
     color: black;
-    padding: 1px 20px;
+    padding: 1px 18px;
     text-align: center;
     font-size: 18px;
     display: inline-block;
     text-decoration: none;
     cursor: pointer;
-    border-radius: 2px;
-    right: 65px;
+    border-radius: 4px;
+    right: 60px;
 }
 
 #info_button:focus{
@@ -123,6 +123,7 @@ div.tooltip {
 }
 
 #but_read {
+    padding: 1px 15px;
     height: 28px;
     position: absolute;
     top: -1px;
@@ -137,4 +138,11 @@ div.tooltip {
 #but_read:hover {
     background-color: #AA4197;
     color: white;
+}
+
+img {
+    top: 2px;
+    left: 4px;
+    position: absolute;
+    height: 42px;
 }

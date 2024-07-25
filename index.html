@@ -25,15 +25,16 @@
 	<div class="container-fluid">
 
 		<div id="agt_tooltip"></div>
+		<img id="title_img" src="data/logo.jpg" alt="PeaceRep Logo" />
 
-		<div class="form-group" style="position: absolute; top: 8px; left: 6px;">
-			<select id='selUser' style='width: 250px;'>
+		<div class="form-group" style="position: absolute; top: 8px; left: 67px;">
+			<select id='selUser' style='width: 215px;'>
 				<option value="0">Peace Process</option>
 			</select>
 			<input type='button' value='Go' id='but_read'>
 		</div>
 
-		<h3 id="main_title" style="text-align: center; padding-top: 5px;">Back and Forth in Peace Negotiations</h3>
+		<h3 id="main_title" style="text-align: center; padding-top: 8px;">Back and Forth in Peace Negotiations</h3>
 		<button title="Information" id="info_button"><i class="fa fa-info"></i></button>
 		<button class="button button1"><i class="fa fa-refresh"></i></button>
 		<div id="info" style="font-size: 14px;">
@@ -68,7 +69,7 @@
 		var parseTime = d3.timeParse("%Y-%m-%d");
 		var width = document.getElementById('chart').clientWidth
 		var margin = 150
-		var height = window.innerHeight - 60
+		var height = window.innerHeight - 50
 		var fixed = null
 		var ideal = { show: true };
 
@@ -152,7 +153,7 @@
 
 
 			//legend
-			var legend = svg.append("g").attr("transform", "translate(5,15)")
+			var legend = svg.append("g").attr("transform", "translate(5,10)")
 				.attr("class", "lines")
 				.selectAll("g")
 				.data(sequence).enter()

@@ -35,7 +35,7 @@
 
 		<h3 id="main_title" style="text-align: center; padding-top: 5px;">Back and Forth in Peace Negotiations</h3>
 		<button title="Information" id="info_button"><i class="fa fa-info"></i></button>
-		<button class="button button1"><i class="fa fa-refresh" style="color:black"></i></button>
+		<button class="button button1"><i class="fa fa-refresh"></i></button>
 		<div id="info" style="font-size: 14px;">
 			<p>This visualisation shows the trajectory of all formal agreements in peace
 				processes from 1990-2023.
@@ -147,7 +147,7 @@
 			var years = svg
 				.append("g")
 				.attr("class", "axis axis--x")
-				.attr("transform", "translate(20,40)")
+				.attr("transform", "translate(20,35)")
 				.call(xAxis).selectAll("text").style("fill", "black").style("font-style", "italic").style("font-size", "14px")
 
 
@@ -194,7 +194,7 @@
 				.attr("class", "processes")
 				.attr("clip-path", "url(#ellipse-clip)")
 				.attr("pointer-events", "all")
-				.attr("transform", `translate(0,15)`);
+				.attr("transform", `translate(0,10)`);
 			//.on("click",d=>{console.log(d)})
 
 			var process = container.selectAll("g")
@@ -254,7 +254,7 @@
 
 			//draw circles for each agreement
 			var circles = svg.append("g")
-				.attr("transform", `translate(0,15)`)
+				.attr("transform", `translate(0,10)`)
 				.attr("class", "circles")
 				.selectAll("circle")
 				.data(groupedData)
@@ -375,7 +375,7 @@
 			//Idealized process line
 			drawIdeal();
 			function drawIdeal() {
-				ideal.container = svg.append("g").attr("class", "ideal").attr("transform", `translate(5,15)`)
+				ideal.container = svg.append("g").attr("class", "ideal").attr("transform", `translate(5,10)`)
 
 
 				//draw line in plot

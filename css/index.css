@@ -33,8 +33,10 @@ div.tooltip {
 .button1 {
     position: absolute;
     top: 6px;
-    background-color: white;
-    border: 0.5px solid rgba(0, 0, 0, 0.205);
+    background-color: #fdd900;
+    /* border: 0.5px solid rgba(0, 0, 0, 0.205); */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    border: none;
     color: black;
     padding: 1px 20px;
     text-align: center;
@@ -42,15 +44,17 @@ div.tooltip {
     display: inline-block;
     text-decoration: none;
     cursor: pointer;
-    border-radius: 4px;
+    border-radius: 2px;
     right: 4px;
 }
 
 #info_button {
     position: absolute;
     top: 6px;
-    background-color: white;
-    border: 0.5px solid rgba(0, 0, 0, 0.205);
+    background-color: #fdd900;
+    /* border: 0.5px solid rgba(0, 0, 0, 0.205); */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    border: none;
     color: black;
     padding: 1px 20px;
     text-align: center;
@@ -58,16 +62,18 @@ div.tooltip {
     display: inline-block;
     text-decoration: none;
     cursor: pointer;
-    border-radius: 4px;
+    border-radius: 2px;
     right: 65px;
 }
 
 #info_button:hover {
-    background-color: #0062973a
+    background-color: #AA4197;
+    color: white;
 }
 
 .button1:hover {
-    background-color: #0062973a
+    background-color: #AA4197;
+    color: white;
 }
 
 #info {
@@ -77,7 +83,7 @@ div.tooltip {
     width: 300px;
     right: -305px;
     z-index: 9;
-    border-radius: 3px;
+    border-radius: 2px;
     color: white;
     padding: 20px;
     overflow-y: auto;
@@ -95,7 +101,7 @@ div.tooltip {
     background-color: black;
     width: 200px;
     color: white;
-    border-radius: 3px;
+    border-radius: 2px;
     padding: 0.8em;
     border: none;
     box-shadow: 0 0px 0px 0 rgb(255 255 255 / 10%), 0 0px 5px 0 rgba(255, 255, 255, 0.2);
@@ -111,7 +117,18 @@ div.tooltip {
 #but_read {
     height: 28px;
     position: absolute;
-    top: 0px;
+    top: -1px;
+    margin-left: 5px;
+    border: none;
+    background-color: #fdd900;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    border-radius: 2px;
+    font-weight: bold;
+}
+
+#but_read:hover {
+    background-color: #AA4197;
+    color: white;
 }
 
 /* .button {

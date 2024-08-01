@@ -147,6 +147,8 @@
 					data[name].push(agreement)
 				})
 
+				console.log(pax);
+
 				//create canvas
 				var svg = d3.select("#chart")
 					.append("svg")
@@ -529,11 +531,11 @@
 				}
 
 				var enterProcess = function (id, name) {
-					let url_string = id + "_" + name
-					updateURL(url_string)
-
 					if (ideal.show) toggleIdeal();
 					if (fixed) exitProcess();
+
+					let url_string = id + "_" + name
+					updateURL(url_string)
 
 					fixed = id
 					processPath.attr("stroke-opacity", 0.05)

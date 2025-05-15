@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 
 <head>
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-BC5HBTZTQW"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag() { dataLayer.push(arguments); }
+		gtag('js', new Date());
+
+		gtag('config', 'G-BC5HBTZTQW');
+	</script>
 	<meta charset="utf-8">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<script src="//d3js.org/d3.v6.min.js"></script>
@@ -39,7 +47,8 @@
 				However, processes do not tend to follow this linear pattern.
 				Click the visualisation to start and see how processes go back and forth.</p>
 			<p>This visualisation illustrates all processes in version 9 of the PA-X Peace
-				Agreements Database, accessible from: <a target="_blank" href="https://www.peaceagreements.org">www.peaceagreements.org</a>.
+				Agreements Database, accessible from: <a target="_blank"
+					href="https://www.peaceagreements.org">www.peaceagreements.org</a>.
 			</p>
 			<p></p>
 			<p style="font-size: 12px;">Credits: Tobias Kauer for original visualisation design & Tomas Vancisin for
@@ -117,8 +126,6 @@
 				if (typeof data[name] === 'undefined') data[name] = []
 				data[name].push(agreement)
 			})
-
-			console.log(data);
 
 			//create canvas
 			var svg = d3.select("#chart")

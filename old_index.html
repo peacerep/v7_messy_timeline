@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+
+<head>
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-BC5HBTZTQW"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag() { dataLayer.push(arguments); }
+		gtag('js', new Date());
+
+		gtag('config', 'G-BC5HBTZTQW');
+	</script>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<script src="//d3js.org/d3.v6.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.5.1.min.js"
+		integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+		integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+		crossorigin="anonymous"></script>
+	<script src="bootstrap3-typeahead.min.js"></script>
+	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+		integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
+	<link href="https://fonts.googleapis.com/css?family=Karla:400,700&display=swap" rel="stylesheet" />
+	<link rel="stylesheet" href="css/index.css" />
+
+</head>
+
+<body>
+	<div class="container-fluid">
+		<div id="agt_tooltip"></div>
+		<div class="form-group" style="position: absolute; top: 4px; left: 4px;">
+			<select id='selUser' style='width: 250px;'>
+				<option value="0">Peace Process</option>
+			</select>
+			<input type='button' value='Go' id='but_read'>
+		</div>
+		<h4 id="main_title" style="text-align: center; padding-top: 5px;">Back and Forth in Peace Negotiations</h4>
+		<button title="Information" id="info_button"><i class="fa fa-info"></i></button>
+		<button class="button button1"><i class="fa fa-refresh" style="color:black"></i></button>
+		<div id="info" style="font-size: 14px;">
+			<p>This visualisation shows the trajectory of all formal agreements in peace
+				processes from 1990-2024.
+				The blue line represents how a peace process would look if it smoothly went from one stage to the next.
+				However, processes do not tend to follow this linear pattern.
+				Click the visualisation to start and see how processes go back and forth.</p>
+			<p>This visualisation illustrates all processes in version 9 of the PA-X Peace
+				Agreements Database, accessible from: <a target="_blank"
+					href="https://www.peaceagreements.org">www.peaceagreements.org</a>.
+			</p>
+			<p></p>
+			<p style="font-size: 12px;">Credits: Tobias Kauer for original visualisation design & Tomas Vancisin for
+				v2 updates at PeaceRep (University of Edinburgh).
+			</p>
+		</div>
+
+		<div class="row">
+			<div class="col-md-12 col-sm-12">
+				<div class="row">
+					<div class="col-md-12">
+						<div id="chart"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+		'use strict'
+		var parseTime = d3.timeParse("%Y-%m-%d");
+		var width = document.getElementById('chart').clientWidth
+		var margin = 150
+		var height = window.innerHeight - 60
+		var fixed = null
+		var ideal = { show: true };
+
+		var sequence = [
+			{ "key": "Cea", "name": ["Ceasefire", "related"], "color": d3.rgb(241, 80, 31, .8), 'position': 5 },
+			{ "key": "Pre", "name": ["Pre-negotiation", "process"], "color": d3.rgb(251, 173, 68, .8), 'position': 4 },
+			{ "key": "SubPar", "name": ["Partial", "Framework-substantive"], "color": d3.rgb(252, 202, 70, .8), 'position': 3 },
+			{ "key": "SubComp", "name": ["Comprehensive", "Framework-substantive"], "color": d3.rgb(172, 176, 140, .8), 'position': 2 },
+			{ "key": "Imp", "name": ["Implementation", "Renegotiation/Renewal"], "color": d3.rgb(74, 144, 226, .8), 'position': 1 },
+			{ "key": "Ren", "name": [], "color": d3.rgb(74, 144, 226, 8), 'position': 1 },
+		]
+
+		// $.ajax({
+		// 	method: 'GET',
+		// 	url: 'https://test.pax.peaceagreements.org/api/agreements/?format=json',
+		// 	dataType: 'jsonp', //change the datatype to 'jsonp' works in most cases
+		// 	success: (res) => {
+		// 		console.log(res);
+		// 	}
+		// })
+
+		// d3.json("https://test.pax.peaceagreements.org/api/agreements/?format=json", d => init(d.results))
+		// d3.csv("agreements-small-june-2019.csv", d => init(d))
+
+		Promise.all([
+			d3.csv("data/pax_all_agreements_v9.csv"),
+		]).then(d => init(d))
+
+		function init(pax) {
+			pax = pax[0]
+			//Filter & Sort agreement data
+			pax = pax.filter((d, i) => d.Stage !== "Oth")
+			pax.sort(function (a, b) {
+				function getDate(d) { return parseTime(d.Dat) }
+				return getDate(a) - getDate(b)
+			})
+
+			//Create Objects for Agreements in the same process
+			var data = {
+				"ideal": [
+					{ "Dat": "1990-01-01", "PPName": "ideal", "Stage": "Cea" },
+					{ "Dat": "1999-01-01", "PPName": "ideal", "Stage": "Pre" },
+					{ "Dat": "2006-01-01", "PPName": "ideal", "Stage": "SubPar" },
+					{ "Dat": "2014-01-01", "PPName": "ideal", "Stage": "SubComp" },
+					{ "Dat": "2022-01-01", "PPName": "ideal", "Stage": "Ren" },
+					{ "Dat": "2024-01-01", "PPName": "ideal", "Stage": "Ren" }]
+			}
+
+			pax.forEach(function (agreement) {
+				if (typeof sequence.find(x => x.key == agreement.Stage) !== 'undefined') sequence.find(x => x.key == agreement.Stage).count++
+				var name = agreement["PPName"]
+				if (typeof data[name] === 'undefined') data[name] = []
+				data[name].push(agreement)
+			})
+
+			//create canvas
+			var svg = d3.select("#chart")
+				.append("svg")
+				.attr("id", "svg")
+				.attr("viewBox", "0 0 " + width + " " + height)
+				.attr("preserveAspectRatio", "xMidYMid meet")
+
+			//Scales & Axes
+			var scaleColor = d3.scaleLinear()
+				.domain([-350, 0, 350])
+				.range([d3.rgb("#0075FF"), d3.rgb("#555555"), d3.rgb("#FF3B00")])
+			var scaleY = d3.scaleLinear()
+				.domain(d3.extent(sequence, d => d.position))
+				.range([20, height - 10])
+			var scaleX = d3.scaleTime()
+				.domain([parseTime("1990-01-01"), parseTime("2025-01-01")])
+				.range([0, width - margin])
+				.nice()
+
+			var xAxis = d3.axisTop(scaleX).ticks(4);
+			var years = svg
+				.append("g")
+				.attr("class", "axis axis--x")
+				.attr("transform", "translate(20,20)")
+				.call(xAxis);
+
+			//legend
+			var legend = svg.append("g")
+				.attr("class", "lines")
+				.selectAll("g")
+				.data(sequence).enter()
+				.append("text")
+				.attr("y", d => scaleY(d.position) - 20)
+				.attr("font-size", "10pt")
+				.attr("text-anchor", "start")
+				.selectAll("tspan").data(d => d.name).enter().append("tspan")
+				.text(d => d)
+				.attr("x", width - margin)
+				.attr("dy", "10pt")
+
+			//compute line segments
+			var segment = function (d, i, scale) {
+				if (i < data[d.PPName].length - 1) {
+					var start = {
+						"x": Math.round(scale(parseTime(d.Dat))),
+						"y": scaleY(sequence.find(x => x.key == d.Stage).position)
+					}
+					var stop = {
+						"x": Math.round(scale(parseTime(data[d.PPName][i + 1].Dat))),
+						"y": scaleY(sequence.find(x => x.key == data[d.PPName][i + 1].Stage).position)
+					}
+					var distance = (stop.x - start.x) / 1.5
+					return "M " + start.x + " " + start.y + " C " + (start.x + distance) + " " + start.y + ", " + (stop.x - distance) + " " + stop.y + ", " + stop.x + " " + stop.y
+				}
+			}
+
+			//draw paths for data
+			svg.append("clipPath")
+				.attr("id", "ellipse-clip")
+				.append("rect")
+				.attr("x", 0)
+				.attr("y", 0)
+				.attr("width", width - margin - 10)
+				.attr("height", height);  //clipPath for zoomed data
+
+			var container = svg.append("g")
+				.attr("class", "processes")
+				.attr("clip-path", "url(#ellipse-clip)")
+				.attr("pointer-events", "all")
+				.attr("transform", `translate(5,0)`);
+			//.on("click",d=>{console.log(d)})
+
+			var process = container.selectAll("g")
+				.data(Object.entries(data)).enter()
+				.append("g")
+				.attr("class", d => "PP-" + d[1][0].PP)
+				.selectAll("path").data(d => d[1])
+				.enter()
+
+			var processPath = process.append("path")
+				.attr("pointer-events", "none")
+				.attr("fill-opacity", 0)
+				.attr("stroke-width", 1)
+				.attr("stroke-linecap", "round")
+				.attr("stroke-opacity", 0.05)
+				.attr("d", (d, i) => segment(d, i, scaleX))
+				.attr("stroke", (d, i) => {
+					if (i < data[d.PPName].length - 1) {
+						var tendency = scaleY(sequence.find(x => x.key == data[d.PPName][i + 1].Stage).position) - scaleY(sequence.find(x => x.key == d.Stage).position)
+						return scaleColor(tendency)
+					}
+				})
+
+			//draw circles for each agreement
+			var circles = svg.append("g")
+				.attr("transform", `translate(5,0)`)
+				.attr("class", "circles").selectAll("circle").data(pax).enter().append("circle")
+				.attr("class", d => "PP-" + d.PP)
+				.attr("cx", d => Math.round(scaleX(parseTime(d.Dat))))
+				.attr("cy", d => scaleY(sequence.find(x => x.key == d.Stage).position))
+				.attr("r", 5)
+				.attr("stroke", "black")
+				.attr("stroke-width", 1)
+				.attr("fill", "white")
+				.attr("fill-opacity", .5)
+				.attr("opacity", 0)
+				.attr("pointer-events", "none")
+				.on("mouseover", function (d, i) {
+
+					d3.select("#agt_tooltip")
+						.style("display", "block")
+						// .style("left", x_position + "px")
+						// .style("top", y_position + "px")
+						.html("<strong>" + i.Dat + ":</strong> " + i.Agt)
+
+					let tool_height = $("#agt_tooltip").height();
+					console.log(tool_height);
+
+					let x_position
+					let y_position
+					if (d.x > width / 2) {
+						x_position = d.x - 220
+					}
+					else if (d.x < width / 2) {
+						x_position = d.x + 20
+					}
+
+					if (d.y > height / 2) {
+						y_position = d.y - tool_height
+					}
+					else if (d.y < height / 2) {
+						y_position = d.y
+					}
+
+
+					d3.select("#agt_tooltip")
+						.style("left", x_position + "px")
+						.style("top", y_position + "px")
+
+					d3.select(this)
+						.transition()
+						.duration(50)
+						.attr("r", 10)
+				})
+				.on("mouseout", function (d) {
+					d3.select("#agt_tooltip")
+						.style("display", "none")
+					d3.select(this)
+						.transition()
+						.duration(50)
+						.attr("r", 5)
+				})
+
+			d3.select(".button1").on("click", function () {
+				d3.selectAll(".idline").remove()
+				ideal.container.transition().duration(200).style("opacity", 1)
+				processPath
+					.attr("stroke-opacity", .05)
+					.attr("stroke-width", 1)
+					.attr("pointer-events", "none")
+				ideal.show = true;
+				fixed = null;
+				$("#selUser").val(0).trigger('change');
+
+				/*svg.call(zoom).transition().duration(1500)
+						.call(zoom.transform,
+							d3.zoomIdentity
+								  .scale(1)
+								  .translate(0, 0)
+							);*/
+
+				circles.attr("opacity", 0).attr("pointer-events", "none")
+				d3.select("#main_title").html('Back and Forth in Peace Negotiations')
+				drawIdeal();
+			})
+
+
+			//Idealized process line
+			drawIdeal();
+			function drawIdeal() {
+				ideal.container = svg.append("g").attr("class", "ideal")
+
+				//draw line in plot
+				ideal.line = ideal.container.selectAll("path")
+					.data(data.ideal)
+					.enter()
+					.append("path")
+					.attr("fill-opacity", 0)
+					.attr("class", "idline")
+					.attr("stroke-width", 2)
+					.attr("stroke-opacity", 1)
+					.attr("stroke", "#0075FF")
+					.style("text-shadow", "1px 1px 2px black")
+					.attr("d", (d, i) => segment(d, i, scaleX))
+					.attr("pointer-events", "all")
+				//draw annotation
+				ideal.helper = ideal.container.append("text")
+					.attr("y", scaleY(3.2))
+					.attr("fill", "#0075FF")
+					.selectAll("tspan").data(["If peace negotiations went smoothly from one stage to the next,", "they would be represented by this blue line going steadily up.", "CLICK TO START"]).enter().append("tspan")
+					.text(d => d)
+					.attr("x", Math.round(scaleX(parseTime("2003-06-01"))))
+					.attr("dy", "12pt")
+					.attr("font-size", "13pt")
+					.style("font-weight", (d, i) => (i > 1) ? "bold" : "normal")
+					.attr("class", "idline")
+					.on("click", _ => toggleIdeal())
+
+				//draw example in explanation
+				ideal.example = d3.select("#ideal-example span").append("svg")
+					.attr("width", 20)
+					.attr("height", 12)
+					.on("mouseover", _ => toggleIdeal())
+					.on("mouseout", _ => toggleIdeal())
+					.append("path")
+					.attr("d", "M 1 11 C 10 11, 10 1, 20 1")
+					.attr("stroke", "#0075FF")
+					.attr("stroke-width", 2)
+					.attr("class", "idline")
+					.attr("fill", "transparent")
+			}
+
+			function toggleIdeal() {
+				if (ideal.show) {
+					ideal.container.style("opacity", 0).style("visibility", "hidden")
+					d3.select("#ideal-example").style("display", "block").style("opacity", 1)
+					processPath.attr("pointer-events", "all").attr("stroke-opacity", 9)
+					ideal.show = false;
+				} else {
+					ideal.container.transition().duration(200).style("opacity", 1)
+					processPath.attr("stroke-opacity", .05)
+					ideal.show = true;
+				}
+
+			}
+
+			//INTERACTION
+			var zoom = d3.zoom()
+				.scaleExtent([0, 1])
+				.translateExtent([[0, 0], [width, height]])
+				.extent([[0, 0], [width, height]])
+				.on("zoom", zoomed);
+			svg.call(zoom)
+
+			function zoomed() {
+				var zoomScale = event.transform.rescaleX(scaleX)
+				years.call(xAxis.scale(zoomScale));
+				processPath.attr("d", (d, i) => segment(d, i, zoomScale))
+				circles.attr("cx", d => Math.round(zoomScale(parseTime(d.Dat))))
+			};
+
+			document.onkeydown = function (e) {
+				if (e.key == "Escape") {
+					exitProcess();
+				}
+			}
+
+			processPath
+				.on("mousemove", function (d, i) {
+					highlightProcess(i)
+				})
+				.on("click", function (d, i) {
+					fixed ? exitProcess() : enterProcess(i.PP, i.PPName)
+				})
+				.on("mouseout", _ => highlightProcess())
+
+			var highlightProcess = function (d, i) {
+				if (!fixed) {
+					if (d) {
+						processPath.attr("stroke-opacity", 0.05)
+						d3.selectAll("g.PP-" + d.PP + " path").attr("stroke-opacity", 1).attr("stroke-width", 2)
+						d3.select("#main_title").html(d.PPName)
+					} else {
+						processPath.attr("stroke-opacity", 1).attr("stroke-width", 1)
+						d3.select("#main_title").html('Back and Forth in Peace Negotiations')
+					}
+				}
+			}
+
+			var enterProcess = function (id, name) {
+				if (ideal.show) toggleIdeal();
+				if (fixed) exitProcess();
+
+				fixed = id
+				processPath.attr("stroke-opacity", 0.05)
+				d3.selectAll("g.PP-" + id + " path").attr("stroke-opacity", 1).attr("stroke-width", 3)
+				d3.selectAll("circle.PP-" + id).attr("opacity", .7).attr("pointer-events", "all")
+				d3.select("#main_title").html(name)
+
+				var d0 = scaleX(parseTime(data[name][0].Dat))
+				var d1 = scaleX(parseTime(data[name][data[name].length - 1].Dat))
+				var scale = width / (d1 - d0)
+
+				/*svg.call(zoom).transition().duration(1500)
+						.call(zoom.transform,
+							d3.zoomIdentity
+								.translate(d0, 0)
+									.scale(scale)
+								  );*/
+			}
+
+			var exitProcess = function () {
+				console.log("here");
+				fixed = null;
+				$("#selUser").val(0).trigger('change');
+
+				/*svg.call(zoom).transition().duration(1500)
+						.call(zoom.transform,
+							d3.zoomIdentity
+								  .scale(1)
+								  .translate(0, 0)
+							);*/
+
+				circles.attr("opacity", 0).attr("pointer-events", "none")
+				processPath.attr("stroke-opacity", .9).attr("stroke-width", 1)
+				d3.select("#main_title").html('Back and Forth in Peace Negotiations')
+			}
+
+			let hovno = Object.entries(data).map(function (d) {
+				return { 'name': d[0], "PP": d[1][0].PP }
+			}).filter(d => d.name != "ideal")
+
+			hovno.sort((a, b) => {
+				let nameA = a.name.toUpperCase();
+				let nameB = b.name.toUpperCase();
+				if (nameA < nameB) {
+					return -1;
+				}
+				if (nameA > nameB) {
+					return 1;
+				}
+				return 0;
+			});
+
+			d3.select("#selUser")
+				.selectAll("my_option")
+				.data(hovno)
+				.join("option")
+				.html(function (d) {
+					return `<option value="` + d.PP + `">` + d.name + `</option>`
+				})
+
+
+			$(document).ready(function () {
+				// Initialize select2
+				$("#selUser").select2();
+				// Read selected option
+				$('#but_read').click(function () {
+					let username = $('#selUser option:selected').text();
+					let get_id = d3.filter(pax, function (d) {
+						return d.PPName == username
+					})
+					enterProcess(get_id[0].PP, username)
+				});
+			});
+
+
+			let counter_collab = 0;
+			d3.select("#info_button").on("click", function () {
+				counter_collab += 1;
+				if (counter_collab % 2 !== 0) {
+					d3.select("#info")
+						.style("right", 5 + "px")
+				}
+				else {
+					d3.select("#info")
+						.style("right", -305 + "px")
+				}
+			})
+		}
+	</script>
+</body>

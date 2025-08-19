@@ -117,10 +117,10 @@
                 id = null
                 name = null
             }
-            loadData(id, name)
+            loadData(id)
         });
 
-        function loadData(ppid, ppname) {
+        function loadData(ppid) {
 
             Promise.all([
                 d3.csv("data/pax_all_agreements_v9.csv"),
@@ -531,31 +531,30 @@
                 //change URL based on selected country
                 function updateURL(subset) {
                     const url = new URL(window.location);
-                    console.log(subset);
-                    
                     url.searchParams.set('subset', subset);
                     window.history.pushState({}, '', url);
                 }
 
-                var enterProcess = function (id, name) {
+                var enterProcess = function (id) {
 
                     if (ideal.show) toggleIdeal();
                     if (fixed) exitProcess();
 
-                    console.log(id);
-                    
-
                     let url_string = id
                     updateURL(url_string)
+
+                    let nome = pax.find(d => d.PP == id)
+                    let the_nome = nome.PPName
+                    
 
                     fixed = id
                     processPath.attr("stroke-opacity", 0.05)
                     d3.selectAll("g.PP-" + id + " path").attr("stroke-opacity", 1).attr("stroke-width", 3)
                     d3.selectAll("circle.PP-" + id).attr("opacity", .7).attr("pointer-events", "all")
-                    d3.select("#main_title").html(name)
+                    d3.select("#main_title").html(the_nome)
 
-                    var d0 = scaleX(parseTime(data[name][0].Dat))
-                    var d1 = scaleX(parseTime(data[name][data[name].length - 1].Dat))
+                    var d0 = scaleX(parseTime(data[the_nome][0].Dat))
+                    var d1 = scaleX(parseTime(data[the_nome][data[the_nome].length - 1].Dat))
                     var scale = width / (d1 - d0)
 
                     /*svg.call(zoom).transition().duration(1500)
@@ -567,7 +566,7 @@
                 }
 
                 if (ppid != null) {
-                    enterProcess(ppid, ppname)
+                    enterProcess(ppid)
                 }
 
                 var exitProcess = function () {

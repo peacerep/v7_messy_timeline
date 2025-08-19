@@ -531,6 +531,8 @@
                 //change URL based on selected country
                 function updateURL(subset) {
                     const url = new URL(window.location);
+                    console.log(subset);
+                    
                     url.searchParams.set('subset', subset);
                     window.history.pushState({}, '', url);
                 }
@@ -540,7 +542,10 @@
                     if (ideal.show) toggleIdeal();
                     if (fixed) exitProcess();
 
-                    let url_string = id + "_" + name
+                    console.log(id);
+                    
+
+                    let url_string = id
                     updateURL(url_string)
 
                     fixed = id

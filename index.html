@@ -46,16 +46,19 @@
         <button class="button button1"><i class="fa fa-refresh"></i></button>
         <div id="info" style="font-size: 14px;">
             <p>This visualisation shows the trajectory of all formal agreements in peace
-                processes from 1990-2024.
+                processes from 1990-2025.
                 The blue line represents how a peace process would look if it smoothly went from one stage to the next.
                 However, processes do not tend to follow this linear pattern.
-                Click the visualisation to start and see how processes go back and forth.</p>
-            <p>This visualisation illustrates all processes in version 9 of the PA-X Peace
-                Agreements Database, accessible from: <a target="_blank"
-                    href="https://www.peaceagreements.org">www.peaceagreements.org</a>.
+                </p>
+            <p>Click the visualisation to start and see how processes go back and forth. Select a peace process to view from the dropdown 
+                in the top left corner. Hover on an agreement to see the name and date, and click an agreement circle to view in PA-X.
+            </p>
+            <p>This visualisation illustrates all peace processes in version 10 of the <a target="_blank"
+                    href="https://www.peaceagreements.org">PA-X Peace
+                Agreements Database</a>.
             </p>
             <p></p>
-            <p style="font-size: 12px;">Credits: Tobias Kauer for original visualisation design & Tomas Vancisin for
+            <p style="font-size: 12px;">Credits: <a target="_blank" href="https://tobiaskauer.org/"></a>Tobias Kauer</a> for original visualisation design & <a target="_blank" href="https://tomasvancisin.co.uk/">Tomas Vancisin</a> for
                 v2 updates at PeaceRep (University of Edinburgh).
             </p>
         </div>
@@ -123,7 +126,7 @@
         function loadData(ppid) {
 
             Promise.all([
-                d3.csv("data/pax_all_agreements_v9.csv"),
+                d3.csv("data/pax_all_agreements_v10.csv"),
             ]).then(d => init(d))
 
             function init(pax) {
@@ -139,11 +142,11 @@
                 var data = {
                     "ideal": [
                         { "Dat": "1990-01-01", "PPName": "ideal", "Stage": "Cea" },
-                        { "Dat": "1999-01-01", "PPName": "ideal", "Stage": "Pre" },
-                        { "Dat": "2006-01-01", "PPName": "ideal", "Stage": "SubPar" },
-                        { "Dat": "2014-01-01", "PPName": "ideal", "Stage": "SubComp" },
-                        { "Dat": "2022-01-01", "PPName": "ideal", "Stage": "Ren" },
-                        { "Dat": "2024-01-01", "PPName": "ideal", "Stage": "Ren" }]
+                        { "Dat": "1997-01-01", "PPName": "ideal", "Stage": "Pre" },
+                        { "Dat": "2004-01-01", "PPName": "ideal", "Stage": "SubPar" },
+                        { "Dat": "2011-01-01", "PPName": "ideal", "Stage": "SubComp" },
+                        { "Dat": "2018-01-01", "PPName": "ideal", "Stage": "Ren" },
+                        { "Dat": "2026-01-01", "PPName": "ideal", "Stage": "Ren" }]
                 }
 
                 pax.forEach(function (agreement) {
@@ -170,10 +173,19 @@
                     .domain(d3.extent(sequence, d => d.position))
                     .range([20, height - 10])
                 var scaleX = d3.scaleTime()
-                    .domain([parseTime("1990-01-01"), parseTime("2025-01-01")])
-                    .range([0, width - margin])
-                    .nice()
-                var xAxis = d3.axisTop(scaleX).ticks(4);
+                    .domain([parseTime("1990-01-01"), parseTime("2026-06-01")])
+                    .range([0, width - margin - 40])
+                    //.nice() //this was making it go up in a nice scale but do not want to see 2030
+                //var xAxis = d3.axisTop(scaleX).ticks(4);
+                //assign the ticks want to see
+                var xAxis = d3.axisTop(scaleX)
+                    .tickValues([
+                        parseTime("1990-01-01"),
+                        parseTime("2000-01-01"),
+                        parseTime("2010-01-01"),
+                        parseTime("2020-01-01")
+                    ])
+                    .tickFormat(d3.timeFormat("%Y"));
                 var years = svg
                     .append("g")
                     .attr("class", "axis axis--x")
@@ -217,7 +229,7 @@
                     .append("rect")
                     .attr("x", 0)
                     .attr("y", 0)
-                    .attr("width", width - margin - 10)
+                    .attr("width", width - margin - 50)
                     .attr("height", height);  //clipPath for zoomed data
 
                 var container = svg.append("g")
@@ -327,50 +339,42 @@
                     .attr("fill", "gray")
                     .attr("fill-opacity", .5)
                     .attr("opacity", 0)
+                    .style("cursor", "pointer")
                     .attr("pointer-events", "none")
-                    .on("mouseover", function (d, i) {
+                    .on("mouseover", function (event, d) {
                         d3.select("#agt_tooltip")
                             .style("display", "block")
-                            // .style("left", x_position + "px")
-                            // .style("top", y_position + "px")
-                            .html("<strong>" + i.Dat + ":</strong> " + i.Agt)
+                            .html("<strong>" + d.Dat + ":</strong> " + d.Agt);
 
                         let tool_height = $("#agt_tooltip").height();
-                        console.log(tool_height);
 
-                        let x_position
-                        let y_position
-                        if (d.x > width / 2) {
-                            x_position = d.x - 220
+                        let x_position = event.pageX + 15;
+                        let y_position = event.pageY - tool_height - 10;
+                        // prevent tooltip going off top of screen
+                        if (y_position < 10) {
+                            y_position = event.pageY + 10;
                         }
-                        else if (d.x < width / 2) {
-                            x_position = d.x + 20
-                        }
-
-                        if (d.y > height / 2) {
-                            y_position = d.y - tool_height
-                        }
-                        else if (d.y < height / 2) {
-                            y_position = d.y
-                        }
-
 
                         d3.select("#agt_tooltip")
                             .style("left", x_position + "px")
-                            .style("top", y_position + "px")
+                            .style("top", y_position + "px");
 
                         d3.select(this)
                             .transition()
                             .duration(50)
-                            .attr("r", 8)
+                            .attr("r", 8);
                     })
-                    .on("mouseout", function (d) {
+                    .on("mouseout", function (event, d) {
                         d3.select("#agt_tooltip")
                             .style("display", "none")
                         d3.select(this)
                             .transition()
                             .duration(50)
                             .attr("r", 5)
+                    })
+                    .on("click", function (event, d) {
+                        const url = `https://www.peaceagreements.org/agreements/${d.AgtId}`;
+                        window.open(url, "_blank");
                     })
 
 

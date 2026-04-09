@@ -146,3 +146,18 @@ img {
     position: absolute;
     height: 42px;
 }
+
+#info a {
+    color: #66d9ff;              /* brighter blue */
+    text-decoration: underline;
+    font-weight: 500;
+}
+
+#info a:hover {
+    color: #ffffff;              /* clear hover state */
+    text-decoration: underline;
+}
+
+#info a:visited {
+    color: #66d9ff;              /* prevent purple visited links */
+}

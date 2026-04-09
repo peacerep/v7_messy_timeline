@@ -161,3 +161,85 @@ img {
 #info a:visited {
     color: #66d9ff;              /* prevent purple visited links */
 }
+
+#zoom_in, #zoom_out {
+    position: absolute;
+    top: 6px;
+    background-color: #fdd900;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    border: none;
+    color: black;
+    padding: 1px 18px;
+    text-align: center;
+    font-size: 18px;
+    display: inline-block;
+    text-decoration: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+#zoom_in:focus, #zoom_out:focus {
+    outline: 0px;
+}
+
+#zoom_in:hover, #zoom_out:hover {
+    background-color: #AA4197;
+    color: white;
+}
+
+#zoom_in {
+    right: 148px;
+    padding: 1px 12px;
+}
+
+#zoom_out {
+    right: 196px;
+    padding: 1px 12px;
+}
+
+#main_title {
+    text-align: center;
+    padding-top: 8px;
+    margin: 0 260px 0 320px;
+    font-size: 24px;
+    line-height: 1.2;
+}
+
+#top_bar {
+    position: relative;
+    height: 64px;
+    width: 100%;
+}
+
+#title_img {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    height: 38px;
+}
+
+#process_picker {
+    position: absolute;
+    top: 8px;
+    left: 67px;
+    margin-bottom: 0;
+}
+
+#main_title {
+    text-align: center;
+    padding-top: 8px;
+    margin: 0 280px 0 320px;
+    font-size: 24px;
+    line-height: 1.2;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+}
+
+#chart {
+    margin-top: 6px;
+}
+
+.tick text {
+    font-size: 14px;
+    font-weight: 500;
+}

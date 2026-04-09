@@ -17,6 +17,8 @@ Promise.all([
 
 Then open in browser: http://localhost:8000
 
+(or open the html file locally)
+
 
 4. If happy, deploy using:
 ```bash
@@ -24,6 +26,11 @@ git add .
 git commit -m "message"
 git push
 ```
+
+This should auto update both:
+https://peacerep.github.io/v7_messy_timeline/ 
+https://pax-messy-timeline.onrender.com [the link on the pax website]
+
 
 ## Important reminders for when updating
 
@@ -37,3 +44,10 @@ git push
 4. changed x axis scale to fit the new years better - comments in code
 5. changed how links are styled
 6. added Tom and Tobias website for credits
+
+## Further updates:
+1. Implementing zoom of x axis
+2. Zoom control buttons
+3. Wrap long titles
+4. Container for top bar added so no overlap
+
